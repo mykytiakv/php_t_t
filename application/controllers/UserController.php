@@ -23,29 +23,25 @@ class UserController extends Controller {
         $message = [];
         $countries = $countryModel->getCountries();
 
-        $vars = [
-            'name' => Input::get('name'),
-            'email' => Input::get('email'),
-            'country_id' => Input::get('country_id'),
-            'countries' => $countries
-        ];
-
         if (!empty($_POST)) {
             if (!$this->model->validate($_POST, 'create')) {
                 $message = $this->view->message('error', $this->model->error);
             } else {
                 $this->model->create($_POST);
                 $message = $this->view->message('success', 'New user created');
-
-                $vars = [
-                    'countries' => $countries
-                ];
+                unset($_POST);
             }
         }
 
         $this->setMessage($message);
-        $vars['message'] = $this->getMessage();
-        $vars['action_title'] = 'Create';
+        $vars = [
+            'name' => Input::get('name'),
+            'email' => Input::get('email'),
+            'country_id' => Input::get('country_id'),
+            'countries' => $countries,
+            'message' => $this->getMessage(),
+            'action_title' => 'Create'
+        ];
 
         $this->view->render('Create user', $vars);
     }
@@ -76,6 +72,10 @@ class UserController extends Controller {
         if (!empty($_POST)) {
             if (!$this->model->validate($_POST, 'edit')) {
                 $message = $this->view->message('error', $this->model->error);
+
+                $vars['name'] = Input::get('name');
+                $vars['email'] = Input::get('email');
+                $vars['country_id'] = Input::get('country_id');
             } else {
                 $this->model->update($_POST, $id);
 

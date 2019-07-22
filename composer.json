@@ -1,5 +1,13 @@
 {
   "require": {
     "monolog/monolog": "^1.0"
+  },
+  "autoload": {
+    "classmap": [
+      "application/core",
+      "application/lib",
+      "application/controllers",
+      "application/models"
+    ]
   }
 }

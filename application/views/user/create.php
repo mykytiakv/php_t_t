@@ -12,9 +12,9 @@
                     <h4><?php echo $title; ?></h4>
                 </div>
                 <div class="card-body">
-                    <form action="/user/<?php if(!$id) { ?>create<?php } else { ?>edit/<?php echo $id; } ?>" method="post" class="mb-2">
+                    <form action="/user/<?php if(!isset($id)) { ?>create<?php } else { ?>edit/<?php echo $id; } ?>" method="post" class="mb-2">
 
-                        <?php if ($id) { ?>
+                        <?php if (isset($id)) { ?>
                             <input name="id" value="<?php echo $id; ?>" hidden>
                         <?php }; ?>
 
@@ -52,14 +52,14 @@
                                 <i class="fas fa-user-<?php echo (!$id) ? 'plus' : 'edit' ?>"></i> <?php echo $action_title; ?>
                             </button>
 
-                            <?php if ($id): ?>
+                            <?php if (isset($id)) { ?>
                                 <a class="btn btn-danger btn-block mr-1 ml-1 remove"
                                    href="/user/delete/<?php echo $id; ?>"
                                    data-name="<?php echo $name; ?>"
                                    data-toggle="modal" data-target="#removeModal">
                                     <i class="fas fa-user-times"></i> Delete
                                 </a>
-                            <?php endif; ?>
+                            <?php } ?>
 
                         </div>
 

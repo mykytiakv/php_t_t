@@ -10,7 +10,6 @@ class User extends Model {
 
     public function create($post) {
         $params = [
-            'id' => '',
             'name' => $post['name'],
             'email' => $post['email'],
             'country_id' => ($post['country_id'] !== '') ? $post['country_id'] : null,
@@ -25,23 +24,24 @@ class User extends Model {
 
     public function validate($post, $type) {
         $nameLength = iconv_strlen($post['name']);
-        $email = iconv_strlen($post['$email']);
+        $email = iconv_strlen($post['email']);
         $userExists = $this->find($post['name']);
+        $usernameError = 'Username <b>' . $post['name'] . '</b> is already exist';
 
         if ($nameLength < 3 or $nameLength > 50) {
-            $this->error = 'Название должно содержать от 3 до 500 символов';
+            $this->error = 'Username should contain 3 to 500 characters';
             return false;
         } elseif (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $this->error = 'E-mail адрес ' . $email . ' указан неверно.\n';
+            $this->error = 'E-mail <b>' . $email . '</b> is invalid';
             return false;
         }
 
         if ($userExists and $type === 'create') {
-            $this->error = 'Пользователь с таким именем уже существует';
+            $this->error = $usernameError;
             return false;
         } elseif ($userExists and $type === 'edit') {
             if ($this->getData()->id != $post['id']) {
-                $this->error = 'Пользователь с таким именем уже существует';
+                $this->error = $usernameError;
                 return false;
             }
         }
@@ -92,7 +92,7 @@ class User extends Model {
     }
 
     public function getUsers() {
-        $query = $this->db->query("SELECT u.id, u.name, u.email, c.country FROM users u LEFT JOIN countries c ON c.id = u.country_id", array());
+        $query = $this->db->query("SELECT u.id, u.name, u.email, c.country FROM users u LEFT JOIN countries c ON c.id = u.country_id ORDER BY u.id", array());
         return $query->results();
     }
 }
